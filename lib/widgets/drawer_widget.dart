@@ -1,7 +1,7 @@
+import 'package:cyberwatch_mobile/screens/auth/landing_screen.dart';
 import 'package:cyberwatch_mobile/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/auth/login_screen.dart';
 import '../screens/home_screen.dart';
 
 class DrawerWidget extends StatefulWidget {
@@ -22,13 +22,31 @@ class _MyDrawerState extends State<DrawerWidget> {
           children: <Widget>[
             UserAccountsDrawerHeader(
               decoration: const BoxDecoration(
-                color: Colors.blue,
+                color: Colors.black,
+                image: DecorationImage(
+                    image: AssetImage(
+                      'assets/images/background.jpg',
+                    ),
+                    fit: BoxFit.cover,
+                    opacity: 150),
               ),
-              accountEmail: TextRegular(
-                  text: 'Police Officer', fontSize: 12, color: Colors.white),
+              accountEmail: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextRegular(
+                      text: '09090104355', fontSize: 14, color: Colors.white),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  TextRegular(
+                      text: 'Police Officer',
+                      fontSize: 12,
+                      color: Colors.white),
+                ],
+              ),
               accountName: TextBold(
                 text: 'John Doe',
-                fontSize: 14,
+                fontSize: 16,
                 color: Colors.white,
               ),
               currentAccountPicture: const Padding(
@@ -87,7 +105,7 @@ class _MyDrawerState extends State<DrawerWidget> {
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const LoginScreen()));
+                                            const LandingScreen()));
                               },
                               child: const Text(
                                 'Continue',

@@ -1,4 +1,5 @@
-import 'package:cyberwatch_mobile/screens/auth/login_screen.dart';
+import 'package:cyberwatch_mobile/screens/auth/landing_screen.dart';
+
 import 'package:cyberwatch_mobile/screens/home_screen.dart';
 import 'package:cyberwatch_mobile/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +86,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const LoginScreen()));
+                        builder: (context) => const LandingScreen()));
                   },
                   child: TextBold(
                       text: 'Login now', fontSize: 14, color: Colors.white),
