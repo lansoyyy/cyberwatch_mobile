@@ -3,6 +3,7 @@ import 'package:cyberwatch_mobile/screens/home_screen.dart';
 import 'package:cyberwatch_mobile/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../services/location.dart';
 import '../../utils/colors.dart';
 import '../../widgets/text_widget.dart';
 
@@ -14,6 +15,12 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  @override
+  void initState() {
+    super.initState();
+    determinePosition();
+  }
+
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
 
