@@ -35,6 +35,31 @@ class HomeScreenState extends State<HomeScreen> {
     }).catchError((error) {
       print('Error getting location: $error');
     });
+
+    // Timer.periodic(const Duration(seconds: 10), (timer) {
+    //   showDialog(
+    //       context: context,
+    //       barrierDismissible: false,
+    //       builder: (context) {
+    //         return AlertDialog(
+    //           title: TextBold(
+    //             text: 'Scan for Credentials',
+    //             fontSize: 18,
+    //             color: Colors.blue,
+    //           ),
+    //           actions: [
+    //             TextButton(
+    //               onPressed: () {},
+    //               child: TextBold(
+    //                 text: 'Continue',
+    //                 fontSize: 18,
+    //                 color: Colors.blue,
+    //               ),
+    //             ),
+    //           ],
+    //         );
+    //       });
+    // });
   }
 
   GoogleMapController? mapController;
