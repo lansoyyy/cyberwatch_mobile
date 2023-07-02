@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cyberwatch_mobile/screens/auth/landing_screen.dart';
 
 import 'package:cyberwatch_mobile/screens/home_screen.dart';
@@ -22,6 +23,9 @@ class _SignupScreenState extends State<SignupScreen> {
   final passwordController = TextEditingController();
   final contactnumberController = TextEditingController();
   final nameController = TextEditingController();
+  int dropValue = 0;
+
+  String station = '';
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +74,97 @@ class _SignupScreenState extends State<SignupScreen> {
                 TextFieldWidget(
                     label: 'Contact Number',
                     controller: contactnumberController),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: 300,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextRegular(
+                          text: 'Station', fontSize: 14, color: Colors.white),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection('Stations')
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<QuerySnapshot> snapshot) {
+                            if (snapshot.hasError) {
+                              print('error');
+                              return const Center(child: Text('Error'));
+                            }
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              print('waiting');
+                              return const Padding(
+                                padding: EdgeInsets.only(top: 50),
+                                child: Center(
+                                    child: CircularProgressIndicator(
+                                  color: Colors.black,
+                                )),
+                              );
+                            }
+
+                            final data = snapshot.requireData;
+
+                            return Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.white,
+                                  ),
+                                  borderRadius: BorderRadius.circular(5)),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 10, right: 10),
+                                child: DropdownButton(
+                                  iconEnabledColor: Colors.white,
+                                  iconDisabledColor: Colors.white,
+                                  dropdownColor: primary,
+                                  underline: const SizedBox(),
+                                  value: dropValue,
+                                  items: [
+                                    for (int i = 0; i < data.docs.length; i++)
+                                      DropdownMenuItem(
+                                        onTap: () {
+                                          station = data.docs[i]['name'];
+                                        },
+                                        value: i,
+                                        child: Center(
+                                          child: SizedBox(
+                                            width: 225,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: Text(
+                                                data.docs[i]['name'],
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'QBold',
+                                                    fontSize: 14),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                  ],
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      dropValue =
+                                          int.parse(newValue.toString());
+                                    });
+                                  },
+                                ),
+                              ),
+                            );
+                          }),
+                    ],
+                  ),
+                ),
                 const SizedBox(
                   height: 30,
                 ),
@@ -135,7 +230,7 @@ class _SignupScreenState extends State<SignupScreen> {
           password: passwordController.text);
 
       addAccount(nameController.text, usernameController.text,
-          contactnumberController.text);
+          contactnumberController.text, station);
 
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: '${usernameController.text}@cyberwatch.com',
