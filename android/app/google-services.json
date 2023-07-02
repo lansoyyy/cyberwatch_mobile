@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "177303697074",
+    "project_id": "cyberwatch-dfd11",
+    "storage_bucket": "cyberwatch-dfd11.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:177303697074:android:e7be2da3b57dd2fd21bbab",
+        "android_client_info": {
+          "package_name": "com.example.cyberwatch_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "177303697074-ia633r8guqq0941dcudjtdj75is2t7n3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3a2IH1CpRKiiODtzLxD3xbh8P0ibjTs4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "177303697074-ia633r8guqq0941dcudjtdj75is2t7n3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
