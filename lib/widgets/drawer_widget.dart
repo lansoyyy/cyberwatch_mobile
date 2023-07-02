@@ -1,5 +1,6 @@
 import 'package:cyberwatch_mobile/screens/auth/landing_screen.dart';
 import 'package:cyberwatch_mobile/widgets/text_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/home_screen.dart';
@@ -101,7 +102,7 @@ class _MyDrawerState extends State<DrawerWidget> {
                             ),
                             MaterialButton(
                               onPressed: () async {
-                                // await FirebaseAuth.instance.signOut();
+                                await FirebaseAuth.instance.signOut();
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                         builder: (context) =>

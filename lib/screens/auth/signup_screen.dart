@@ -1,11 +1,14 @@
 import 'package:cyberwatch_mobile/screens/auth/landing_screen.dart';
 
 import 'package:cyberwatch_mobile/screens/home_screen.dart';
+import 'package:cyberwatch_mobile/services/signup.dart';
 import 'package:cyberwatch_mobile/widgets/textfield_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/colors.dart';
 import '../../widgets/text_widget.dart';
+import '../../widgets/toast_widget.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -18,6 +21,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
   final contactnumberController = TextEditingController();
+  final nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +51,10 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(
                   height: 30,
                 ),
+                TextFieldWidget(label: 'Name', controller: nameController),
+                const SizedBox(
+                  height: 10,
+                ),
                 TextFieldWidget(
                     label: 'Username', controller: usernameController),
                 const SizedBox(
@@ -60,7 +68,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   height: 10,
                 ),
                 TextFieldWidget(
-                    isObscure: true,
                     label: 'Contact Number',
                     controller: contactnumberController),
                 const SizedBox(
@@ -74,8 +81,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   minWidth: 250,
                   color: Colors.white,
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
+                    register(context);
                   },
                   child: TextBold(text: 'SIGNUP', fontSize: 18, color: primary),
                 ),
@@ -120,5 +126,25 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
+  }
+
+  register(context) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: '${usernameController.text}@cyberwatch.com',
+          password: passwordController.text);
+
+      addAccount(nameController.text, usernameController.text,
+          contactnumberController.text);
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: '${usernameController.text}@cyberwatch.com',
+          password: passwordController.text);
+      showToast("Registered Succesfully!");
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()));
+    } on Exception catch (e) {
+      showToast("An error occurred: $e");
+    }
   }
 }

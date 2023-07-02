@@ -1,11 +1,13 @@
 import 'package:cyberwatch_mobile/screens/auth/signup_screen.dart';
 import 'package:cyberwatch_mobile/screens/home_screen.dart';
 import 'package:cyberwatch_mobile/widgets/textfield_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/location.dart';
 import '../../utils/colors.dart';
 import '../../widgets/text_widget.dart';
+import '../../widgets/toast_widget.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({Key? key}) : super(key: key);
@@ -72,8 +74,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   minWidth: 250,
                   color: Colors.white,
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
+                    login();
                   },
                   child: TextBold(text: 'LOGIN', fontSize: 18, color: primary),
                 ),
@@ -120,5 +121,17 @@ class _LandingScreenState extends State<LandingScreen> {
         ),
       ),
     );
+  }
+
+  login() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: '${usernameController.text}@cyberwatch.com',
+          password: passwordController.text);
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()));
+    } on Exception catch (e) {
+      showToast("An error occurred: $e");
+    }
   }
 }
