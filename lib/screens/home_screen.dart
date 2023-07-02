@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -26,7 +28,19 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     determinePosition();
-    Geolocator.getCurrentPosition().then((position) {
+    Geolocator.getCurrentPosition().then((position) async {
+      await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update({
+        'location': FieldValue.arrayUnion([
+          {
+            'lat': position.latitude,
+            'long': position.longitude,
+            'dateTime': DateTime.now(),
+          }
+        ]),
+      });
       setState(() {
         lat = position.latitude;
         long = position.longitude;
@@ -36,29 +50,12 @@ class HomeScreenState extends State<HomeScreen> {
       print('Error getting location: $error');
     });
 
-    // Timer.periodic(const Duration(seconds: 10), (timer) {
-    //   showDialog(
-    //       context: context,
-    //       barrierDismissible: false,
-    //       builder: (context) {
-    //         return AlertDialog(
-    //           title: TextBold(
-    //             text: 'Scan for Credentials',
-    //             fontSize: 18,
-    //             color: Colors.blue,
-    //           ),
-    //           actions: [
-    //             TextButton(
-    //               onPressed: () {},
-    //               child: TextBold(
-    //                 text: 'Continue',
-    //                 fontSize: 18,
-    //                 color: Colors.blue,
-    //               ),
-    //             ),
-    //           ],
-    //         );
-    //       });
+    // Timer.periodic(const Duration(seconds: 30), (timer) {
+    //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+    //       builder: (context) => ScanScreen(
+    //             dateTime: DateTime.now(),
+    //           )));
+
     // });
   }
 

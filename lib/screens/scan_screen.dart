@@ -1,11 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cyberwatch_mobile/screens/home_screen.dart';
 import 'package:cyberwatch_mobile/widgets/text_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:local_auth/local_auth.dart';
 
 class ScanScreen extends StatefulWidget {
-  const ScanScreen({super.key});
+  final DateTime dateTime;
+
+  const ScanScreen({super.key, required this.dateTime});
 
   @override
   State<ScanScreen> createState() => _ScanScreenState();
@@ -14,17 +20,17 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> {
   final LocalAuthentication auth = LocalAuthentication();
 
-  String _authorized = 'Not Authorized';
-  bool _isAuthenticating = false;
+  String authorized = 'Not Authorized';
+  bool isAuthenticating = false;
   bool authenticated = false;
 
-  Future<void> _authenticateWithBiometrics() async {
+  Future<void> authenticateWithBiometrics() async {
     // only Biometrics
 
     try {
       setState(() {
-        _isAuthenticating = true;
-        _authorized = 'Authenticating';
+        isAuthenticating = true;
+        authorized = 'Authenticating';
       });
       authenticated = await auth.authenticate(
         localizedReason:
@@ -35,14 +41,14 @@ class _ScanScreenState extends State<ScanScreen> {
         ),
       );
       setState(() {
-        _isAuthenticating = false;
-        _authorized = 'Authenticating';
+        isAuthenticating = false;
+        authorized = 'Authenticating';
       });
     } on PlatformException catch (e) {
       print(e);
       setState(() {
-        _isAuthenticating = false;
-        _authorized = 'Error - ${e.message}';
+        isAuthenticating = false;
+        authorized = 'Error - ${e.message}';
       });
       return;
     }
@@ -52,11 +58,29 @@ class _ScanScreenState extends State<ScanScreen> {
 
     final String message = authenticated ? 'Authorized' : 'Not Authorized';
     setState(() {
-      _authorized = message;
+      authorized = message;
     });
 
     if (authenticated) {
+      Geolocator.getCurrentPosition().then((position) async {
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .update({
+          'location': FieldValue.arrayUnion([
+            {
+              'lat': position.latitude,
+              'long': position.longitude,
+              'dateTime': widget.dateTime,
+            }
+          ]),
+        });
+      }).catchError((error) {
+        print('Error getting location: $error');
+      });
       Fluttertoast.showToast(msg: 'Fingerprint scanned succesfully!');
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomeScreen()));
     } else {
       Fluttertoast.showToast(msg: 'Fingerprint scanned unsuccesfully!');
     }
@@ -79,7 +103,7 @@ class _ScanScreenState extends State<ScanScreen> {
           children: [
             GestureDetector(
               onTap: () {
-                // _authenticateWithBiometrics();
+                authenticateWithBiometrics();
               },
               child: Image.asset(
                 'assets/images/fingerprint.png',
@@ -90,7 +114,7 @@ class _ScanScreenState extends State<ScanScreen> {
               height: 20,
             ),
             TextRegular(
-              text: 'Scan biometrics here',
+              text: 'Scan fingerprint here',
               fontSize: 14,
               color: Colors.grey,
             ),

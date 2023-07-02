@@ -12,7 +12,13 @@ Future addAccount(name, username, contactNumber) async {
     'contactNumber': contactNumber,
     'id': docUser.id,
     'profilePicture': 'https://cdn-icons-png.flaticon.com/256/149/149071.png',
-    'location': {'lat': 0.00, 'long': 0.00}
+    'location': [
+      {
+        'lat': 0.00,
+        'long': 0.00,
+        'dateTime': DateTime.now(),
+      }
+    ]
   };
 
   await docUser.set(json);
